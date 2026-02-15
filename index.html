@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURELUX - Premium Luxury Marketplace</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <i class="fas fa-gem"></i> AURELUX
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="products.html">Shop</a></li>
+                    <li><a href="#collections">Collections</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                <div class="nav-icons">
+                    <button id="searchBtn" class="nav-btn"><i class="fas fa-search"></i></button>
+                    <button id="userBtn" class="nav-btn"><i class="fas fa-user"></i></button>
+                    <button id="cartBtn" class="nav-btn">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Search Modal -->
+    <div id="searchModal" class="modal">
+        <div class="modal-content search-modal">
+            <span class="close">&times;</span>
+            <input type="text" id="searchInput" placeholder="Search products..." class="search-input">
+            <div id="searchResults" class="search-results"></div>
+        </div>
+    </div>
+
+    <!-- User Modal -->
+    <div id="userModal" class="modal">
+        <div class="modal-content user-modal">
+            <span class="close">&times;</span>
+            <h2>Account</h2>
+            <div id="accountContent">
+                <button id="loginBtn" class="btn btn-primary">Login</button>
+                <button id="registerBtn" class="btn btn-secondary">Register</button>
+            </div>
+            <div id="userProfile" style="display: none;">
+                <p>Welcome, <span id="userNameDisplay"></span>!</p>
+                <button id="logoutBtn" class="btn btn-secondary">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content form-modal">
+            <span class="close">&times;</span>
+            <h2>Login to AURELUX</h2>
+            <form id="loginForm">
+                <input type="email" placeholder="Email" id="email" required>
+                <input type="password" placeholder="Password" id="password" required>
+                <button type="submit" class="btn btn-primary">Login</button>
+            </form>
+            <p class="form-toggle">Don't have an account? <a href="#" id="switchToRegister">Register</a></p>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="registerModal" class="modal">
+        <div class="modal-content form-modal">
+            <span class="close">&times;</span>
+            <h2>Create Account</h2>
+            <form id="registerForm">
+                <input type="text" placeholder="Full Name" id="fullName" required>
+                <input type="email" placeholder="Email" id="regEmail" required>
+                <input type="password" placeholder="Password" id="regPassword" required>
+                <input type="password" placeholder="Confirm Password" id="confirmPassword" required>
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+            <p class="form-toggle">Already have an account? <a href="#" id="switchToLogin">Login</a></p>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>AURELUX COLLECTION</h1>
+            <p>Discover Timeless Luxury & Elegance</p>
+            <a href="products.html" class="btn btn-hero">Explore Now</a>
+        </div>
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1200&q=80" alt="AURELUX luxury collection" class="hero-img">
+        </div>
+    </section>
+
+    <!-- Featured Categories -->
+    <section class="categories" id="collections">
+        <h2>Featured Collections</h2>
+        <div class="category-grid">
+            <div class="category-card">
+                <div class="category-image">
+                    <img src="https://images.unsplash.com/photo-1518544801976-3e159e50e5bb?auto=format&fit=crop&w=800&q=80" alt="Luxury jewelry collection">
+                </div>
+                <h3>Jewelry</h3>
+                <p>Exquisite pieces for every occasion</p>
+                <a href="products.html?category=jewelry" class="btn btn-secondary">Browse</a>
+            </div>
+            <div class="category-card">
+                <div class="category-image">
+                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80" alt="Luxury watches collection">
+                </div>
+                <h3>Watches</h3>
+                <p>Precision meets sophistication</p>
+                <a href="products.html?category=watches" class="btn btn-secondary">Browse</a>
+            </div>
+            <div class="category-card">
+                <div class="category-image">
+                    <img src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=800&q=80" alt="Luxury accessories collection">
+                </div>
+                <h3>Accessories</h3>
+                <p>Elevate your style</p>
+                <a href="products.html?category=accessories" class="btn btn-secondary">Browse</a>
+            </div>
+            <div class="category-card">
+                <div class="category-image">
+                    <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=800&q=80" alt="Luxury handbags collection">
+                </div>
+                <h3>Handbags</h3>
+                <p>Timeless elegance in every design</p>
+                <a href="products.html?category=handbags" class="btn btn-secondary">Browse</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <section class="featured-products">
+        <h2>Featured Products</h2>
+        <div class="products-grid" id="featuredProductsGrid">
+            <!-- Products will be loaded dynamically -->
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter">
+        <div class="newsletter-content">
+            <h2>Join AURELUX Club</h2>
+            <p>Get exclusive access to new collections and special offers</p>
+            <form id="newsletterForm" class="newsletter-form">
+                <input type="email" placeholder="Enter your email" required>
+                <button type="submit" class="btn btn-primary">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About AURELUX</h3>
+                <p>Premium luxury marketplace offering curated collections of the finest goods worldwide.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#">Shipping Info</a></li>
+                    <li><a href="#">Returns</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-pinterest"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>Email: info@aurelux.com</p>
+                <p>Phone: +1 (888) 123-4567</p>
+                <p>Hours: 9AM - 8PM EST</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 AURELUX. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="firebase-init.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

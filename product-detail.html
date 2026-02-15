@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details - AURELUX</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="logo">
+                    <i class="fas fa-gem"></i> AURELUX
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="products.html">Shop</a></li>
+                    <li><a href="index.html#collections">Collections</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+                <div class="nav-icons">
+                    <button id="searchBtn" class="nav-btn"><i class="fas fa-search"></i></button>
+                    <button id="userBtn" class="nav-btn"><i class="fas fa-user"></i></button>
+                    <button id="cartBtn" class="nav-btn">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span class="cart-count" id="cartCount">0</span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Product Detail Section -->
+    <section class="product-detail-page">
+        <div class="breadcrumb">
+            <a href="index.html">Home</a> / <a href="products.html">Products</a> / <span id="breadcrumbName"></span>
+        </div>
+
+        <div class="product-detail-container">
+            <!-- Product Images -->
+            <div class="product-images">
+                <div class="main-image">
+                    <div class="placeholder-image main-product-image" id="mainImage">
+                        <i class="fas fa-image"></i> Product Image
+                    </div>
+                </div>
+                <div class="thumbnail-images" id="thumbnailImages">
+                    <!-- Thumbnails will be loaded dynamically -->
+                </div>
+            </div>
+
+            <!-- Product Info -->
+            <div class="product-info">
+                <div class="product-header">
+                    <h1 id="productName"></h1>
+                    <div class="rating">
+                        <div class="stars" id="productRating"></div>
+                        <span id="reviewCount" class="review-count"></span>
+                    </div>
+                </div>
+
+                <div class="price-section">
+                    <span class="price" id="productPrice"></span>
+                    <span class="original-price" id="originalPrice"></span>
+                    <span class="discount" id="discountBadge"></span>
+                </div>
+
+                <div class="product-description">
+                    <h3>Description</h3>
+                    <p id="productDescription"></p>
+                </div>
+
+                <div class="product-details">
+                    <h3>Details</h3>
+                    <ul id="productDetails">
+                        <!-- Details will be loaded dynamically -->
+                    </ul>
+                </div>
+
+                <div class="product-options">
+                    <div class="color-option">
+                        <label>Color:</label>
+                        <div id="colorOptions" class="option-buttons">
+                            <!-- Colors will be loaded dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="size-option">
+                        <label>Size:</label>
+                        <div id="sizeOptions" class="option-buttons">
+                            <!-- Sizes will be loaded dynamically -->
+                        </div>
+                    </div>
+
+                    <div class="quantity-option">
+                        <label>Quantity:</label>
+                        <div class="quantity-selector">
+                            <button id="decreaseQty" class="qty-btn">-</button>
+                            <input type="number" id="quantity" value="1" min="1">
+                            <button id="increaseQty" class="qty-btn">+</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="product-actions">
+                    <button id="addToCartBtn" class="btn btn-primary btn-large">
+                        <i class="fas fa-shopping-bag"></i> Add to Cart
+                    </button>
+                    <button id="addToWishlistBtn" class="btn btn-outline btn-large">
+                        <i class="far fa-heart"></i> Add to Wishlist
+                    </button>
+                </div>
+
+                <div class="product-info-section">
+                    <div class="info-item">
+                        <i class="fas fa-shipping-fast"></i>
+                        <div>
+                            <h4>Free Shipping</h4>
+                            <p>On orders over $100</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-undo"></i>
+                        <div>
+                            <h4>Easy Returns</h4>
+                            <p>30-day return policy</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-lock"></i>
+                        <div>
+                            <h4>Secure Payment</h4>
+                            <p>100% secure transactions</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="share-section">
+                    <p>Share:</p>
+                    <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-pinterest"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Related Products -->
+        <section class="related-products">
+            <h2>You May Also Like</h2>
+            <div class="products-grid" id="relatedProducts">
+                <!-- Related products will be loaded dynamically -->
+            </div>
+        </section>
+
+        <!-- Customer Reviews Section -->
+        <section class="reviews-section">
+            <h2>Customer Reviews</h2>
+            <div class="reviews-container">
+                <div class="reviews-summary" id="reviewsSummary">
+                    <!-- Review summary will be loaded dynamically -->
+                </div>
+                <div class="reviews-list" id="reviewsList">
+                    <!-- Reviews will be loaded dynamically -->
+                </div>
+                <div class="write-review">
+                    <h3>Write a Review</h3>
+                    <form id="reviewForm">
+                        <div class="rating-input">
+                            <label>Your Rating:</label>
+                            <div class="star-rating" id="ratingInput">
+                                <input type="radio" name="rating" value="5" id="star5">
+                                <label for="star5"><i class="fas fa-star"></i></label>
+                                <input type="radio" name="rating" value="4" id="star4">
+                                <label for="star4"><i class="fas fa-star"></i></label>
+                                <input type="radio" name="rating" value="3" id="star3">
+                                <label for="star3"><i class="fas fa-star"></i></label>
+                                <input type="radio" name="rating" value="2" id="star2">
+                                <label for="star2"><i class="fas fa-star"></i></label>
+                                <input type="radio" name="rating" value="1" id="star1">
+                                <label for="star1"><i class="fas fa-star"></i></label>
+                            </div>
+                        </div>
+                        <input type="text" placeholder="Review Title" id="reviewTitle" required>
+                        <textarea placeholder="Your review..." id="reviewText" rows="4" required></textarea>
+                        <button type="submit" class="btn btn-primary">Submit Review</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>About AURELUX</h3>
+                <p>Premium luxury marketplace offering curated collections of the finest goods worldwide.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#about">About Us</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#">Shipping Info</a></li>
+                    <li><a href="#">Returns</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-pinterest"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h3>Contact</h3>
+                <p>Email: info@aurelux.com</p>
+                <p>Phone: +1 (888) 123-4567</p>
+                <p>Hours: 9AM - 8PM EST</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 AURELUX. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="firebase-init.js"></script>
+    <script src="script.js"></script>
+    <script src="product-detail.js"></script>
+</body>
+</html>
