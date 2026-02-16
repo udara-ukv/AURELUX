@@ -123,7 +123,7 @@ function setupEventListeners() {
     // Checkout
     const checkoutBtn = document.getElementById('proceedCheckout');
     if (checkoutBtn) {
-        checkoutBtn.addEventListener('click', () => {
+        checkoutBtn.addEventListener('click', async () => {
             if (cart.length === 0) {
                 showNotification('Your cart is empty', 'error');
                 return;
@@ -136,6 +136,49 @@ function setupEventListeners() {
                     openModal('userModal');
                 }, 500);
                 return;
+            }
+
+            // Calculate order total
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const shipping = subtotal > 100 ? 0 : 10;
+            const promoCode = document.getElementById('promoCode');
+            let discount = 0;
+            
+            if (promoCode && promoCode.value) {
+                const appliedCode = localStorage.getItem('appliedPromoCode');
+                if (appliedCode) {
+                    discount = appliedCode === 'LUXURY20' ? subtotal * 0.2 : 
+                              appliedCode === 'SAVE10' ? subtotal * 0.1 : 0;
+                }
+            }
+            
+            const total = subtotal + shipping - discount;
+
+            // Save order to Firestore
+            if (window.db) {
+                try {
+                    await window.db.collection('orders').add({
+                        customerEmail: user.email,
+                        customerName: user.fullName,
+                        items: cart.map(item => ({
+                            id: item.id,
+                            name: item.name,
+                            price: item.price,
+                            quantity: item.quantity,
+                            color: item.color,
+                            size: item.size
+                        })),
+                        subtotal: subtotal,
+                        shipping: shipping,
+                        discount: discount,
+                        total: total,
+                        promoCode: promoCode?.value || null,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        status: 'completed'
+                    });
+                } catch (error) {
+                    console.error('Error saving order:', error);
+                }
             }
 
             // Simulate checkout

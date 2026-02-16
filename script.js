@@ -277,7 +277,45 @@ function updateCartCount() {
 }
 
 // ===== USER AUTHENTICATION =====
-function registerUser(email, password, fullName) {
+async function createOrUpdateUserProfile(user, fullName = '') {
+    if (!window.db || !user) return;
+
+    const profileData = {
+        uid: user.uid,
+        email: user.email || '',
+        fullName: fullName || user.displayName || '',
+        lastLoginAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    if (fullName) {
+        profileData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+    }
+
+    await window.db.collection('users').doc(user.uid).set(profileData, { merge: true });
+}
+
+async function registerUser(email, password, fullName) {
+    if (window.auth) {
+        try {
+            const credential = await window.auth.createUserWithEmailAndPassword(email, password);
+            const user = credential.user;
+
+            if (user && fullName) {
+                await user.updateProfile({ displayName: fullName });
+            }
+
+            await createOrUpdateUserProfile(user, fullName);
+            saveUser({ email, fullName });
+            showNotification('Account created successfully!');
+            updateUserUI();
+            return true;
+        } catch (error) {
+            console.error('Firebase register failed:', error);
+            showNotification(error.message || 'Registration failed', 'error');
+            return false;
+        }
+    }
+
     if (localStorage.getItem('user_' + email)) {
         showNotification('Email already registered', 'error');
         return false;
@@ -291,11 +329,29 @@ function registerUser(email, password, fullName) {
     };
     
     localStorage.setItem('user_' + email, JSON.stringify(userData));
+    saveUser({ email, fullName });
     showNotification('Account created successfully!');
+    updateUserUI();
     return true;
 }
 
-function loginUser(email, password) {
+async function loginUser(email, password) {
+    if (window.auth) {
+        try {
+            const credential = await window.auth.signInWithEmailAndPassword(email, password);
+            const user = credential.user;
+            await createOrUpdateUserProfile(user);
+            saveUser({ email: user.email || email, fullName: user.displayName || '' });
+            showNotification(`Welcome back, ${user.displayName || 'User'}!`);
+            updateUserUI();
+            return true;
+        } catch (error) {
+            console.error('Firebase login failed:', error);
+            showNotification(error.message || 'Invalid credentials', 'error');
+            return false;
+        }
+    }
+
     const userData = JSON.parse(localStorage.getItem('user_' + email));
     
     if (!userData || userData.password !== password) {
@@ -309,22 +365,33 @@ function loginUser(email, password) {
     return true;
 }
 
-function logoutUser() {
+async function logoutUser() {
+    if (window.auth) {
+        try {
+            await window.auth.signOut();
+        } catch (error) {
+            console.error('Firebase logout failed:', error);
+        }
+    }
+
     localStorage.removeItem('user');
     showNotification('Logged out successfully');
     updateUserUI();
 }
 
 function updateUserUI() {
-    const user = JSON.parse(localStorage.getItem('user'));
+    const localUser = JSON.parse(localStorage.getItem('user'));
+    const firebaseUser = window.auth ? window.auth.currentUser : null;
+    const displayName = (firebaseUser && firebaseUser.displayName) || (localUser && localUser.fullName) || '';
+
     const accountContent = document.getElementById('accountContent');
     const userProfile = document.getElementById('userProfile');
     const userNameDisplay = document.getElementById('userNameDisplay');
     
-    if (user && accountContent && userProfile) {
+    if ((firebaseUser || localUser) && accountContent && userProfile) {
         accountContent.style.display = 'none';
         userProfile.style.display = 'block';
-        userNameDisplay.textContent = user.fullName;
+        userNameDisplay.textContent = displayName || 'User';
     } else if (accountContent && userProfile) {
         accountContent.style.display = 'block';
         userProfile.style.display = 'none';
@@ -422,6 +489,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update cart count on page load
     updateCartCount();
     updateUserUI();
+
+    if (window.auth) {
+        window.auth.onAuthStateChanged((user) => {
+            if (user) {
+                saveUser({ email: user.email || '', fullName: user.displayName || '' });
+            } else {
+                localStorage.removeItem('user');
+            }
+            updateUserUI();
+        });
+    }
 
     if (!window.productsReady) {
         window.productsReady = false;
@@ -530,12 +608,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Login form
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             
-            if (loginUser(email, password)) {
+            if (await loginUser(email, password)) {
                 closeModal('loginModal');
                 loginForm.reset();
             }
@@ -545,7 +623,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Register form
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
-        registerForm.addEventListener('submit', (e) => {
+        registerForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const fullName = document.getElementById('fullName').value;
             const email = document.getElementById('regEmail').value;
@@ -557,7 +635,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            if (registerUser(email, password, fullName)) {
+            if (await registerUser(email, password, fullName)) {
                 closeModal('registerModal');
                 registerForm.reset();
             }
