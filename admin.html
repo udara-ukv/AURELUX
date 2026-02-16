@@ -194,6 +194,78 @@
             font-weight: bold;
             color: #1a1a1a;
         }
+
+        .page-toggle {
+            padding: 1rem;
+            background: #f9f9f9;
+            border-radius: 4px;
+            border-left: 4px solid #1a1a1a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-toggle h4 {
+            margin: 0;
+            color: #1a1a1a;
+            font-size: 0.95rem;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            display: none;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            border-radius: 26px;
+            transition: 0.3s;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #4caf50;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        .page-status {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .page-status.enabled {
+            color: #4caf50;
+        }
+
+        .page-status.disabled {
+            color: #ff9800;
+        }
     </style>
 </head>
 <body>
@@ -304,6 +376,17 @@
                 <h2><i class="fas fa-chart-bar"></i> Product Performance</h2>
                 <div class="product-stats" id="productStats">
                     <p style="text-align: center; padding: 2rem; color: #999;">Loading product data...</p>
+                </div>
+            </div>
+
+            <!-- Page Visibility Control -->
+            <div class="dashboard-section">
+                <h2><i class="fas fa-eye"></i> Page Visibility Control</h2>
+                <p style="margin-bottom: 1.5rem; color: #666;">
+                    Enable or disable pages. Disabled pages show "Coming Soon" to visitors.
+                </p>
+                <div id="pageVisibilityControls" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                    <!-- Page toggles will be loaded here -->
                 </div>
             </div>
         </div>

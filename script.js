@@ -506,6 +506,9 @@ document.addEventListener('DOMContentLoaded', function() {
         initProducts();
     }
 
+    // Check if current page is enabled
+    checkPageVisibility();
+
     // Modal controls
     document.querySelectorAll('.close').forEach(closeBtn => {
         closeBtn.addEventListener('click', function() {
@@ -754,3 +757,72 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
+// ===== PAGE VISIBILITY CHECK =====
+async function checkPageVisibility() {
+    const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+    
+    // Pages that need visibility check
+    const pageMap = {
+        'products.html': 'products',
+        'product-detail.html': 'product-detail',
+        'cart.html': 'cart'
+    };
+
+    const pageId = pageMap[currentPage];
+    if (!pageId) return; // No check needed for this page
+
+    if (!window.db) return; // Firebase not available
+
+    try {
+        const settingsSnapshot = await window.db.collection('settings').doc('pages').get();
+        const pageSettings = settingsSnapshot.exists ? settingsSnapshot.data() : {};
+        
+        const isPageEnabled = pageSettings[pageId] !== false;
+        
+        if (!isPageEnabled) {
+            // Show coming soon page
+            document.body.innerHTML = `
+                <div style="display: flex; align-items: center; justify-content: center; height: 100vh; flex-direction: column; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                    <h1 style="color: white; font-size: 3rem; margin-bottom: 1rem;">Coming Soon</h1>
+                    <p style="color: rgba(255,255,255,0.8); font-size: 1.2rem; margin-bottom: 2rem;">This page is not yet available.</p>
+                    <a href="index.html" style="background: white; color: #667eea; padding: 12px 30px; border-radius: 4px; text-decoration: none; font-weight: bold;">
+                        Back to Home
+                    </a>
+                </div>
+            `;
+        }
+    } catch (error) {
+        console.error('Error checking page visibility:', error);
+    }
+}
+
+// Update navigation to hide/show pages based on visibility
+async function updateNavigationVisibility() {
+    if (!window.db) return;
+
+    try {
+        const settingsSnapshot = await window.db.collection('settings').doc('pages').get();
+        const pageSettings = settingsSnapshot.exists ? settingsSnapshot.data() : {};
+
+        // Map page IDs to nav links
+        const navMap = {
+            'products': 'a[href="products.html"]',
+            'cart': 'a[href="cart.html"]'
+        };
+
+        for (const [pageId, selector] of Object.entries(navMap)) {
+            const isEnabled = pageSettings[pageId] !== false;
+            const links = document.querySelectorAll(selector);
+            links.forEach(link => {
+                link.style.display = isEnabled ? 'block' : 'none';
+            });
+        }
+    } catch (error) {
+        console.error('Error updating navigation visibility:', error);
+    }
+}
+
+// Call navigation update on load
+window.addEventListener('load', updateNavigationVisibility);
+

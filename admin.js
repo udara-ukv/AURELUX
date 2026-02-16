@@ -73,7 +73,8 @@ async function loadDashboardData() {
             loadOrders(),
             loadCustomers(),
             loadSubscribers(),
-            loadProductStats()
+            loadProductStats(),
+            loadPageSettings()
         ]);
         calculateStats();
     } catch (error) {
@@ -368,5 +369,86 @@ async function exportAllData() {
     } catch (error) {
         console.error('Error exporting data:', error);
         alert('Error exporting data: ' + error.message);
+    }
+}
+
+// Page Visibility Management
+const PAGES = [
+    { id: 'products', name: 'Shop', url: 'products.html', default: true },
+    { id: 'product-detail', name: 'Product Details', url: 'product-detail.html', default: true },
+    { id: 'cart', name: 'Shopping Cart', url: 'cart.html', default: true }
+];
+
+async function loadPageSettings() {
+    if (!window.db) {
+        renderPageControls([]);
+        return;
+    }
+
+    try {
+        const settingsSnapshot = await window.db.collection('settings').doc('pages').get();
+        let pageSettings = settingsSnapshot.exists ? settingsSnapshot.data() : {};
+
+        // Initialize missing pages with defaults
+        let needsUpdate = false;
+        for (const page of PAGES) {
+            if (!(page.id in pageSettings)) {
+                pageSettings[page.id] = page.default;
+                needsUpdate = true;
+            }
+        }
+
+        // Save defaults if needed
+        if (needsUpdate) {
+            await window.db.collection('settings').doc('pages').set(pageSettings);
+        }
+
+        renderPageControls(pageSettings);
+    } catch (error) {
+        console.error('Error loading page settings:', error);
+        renderPageControls({});
+    }
+}
+
+function renderPageControls(pageSettings) {
+    const container = document.getElementById('pageVisibilityControls');
+    
+    container.innerHTML = PAGES.map(page => {
+        const isEnabled = pageSettings[page.id] !== false;
+        
+        return `
+            <div class="page-toggle">
+                <div>
+                    <h4>${page.name}</h4>
+                    <div class="page-status ${isEnabled ? 'enabled' : 'disabled'}">
+                        ${isEnabled ? '✓ Visible to customers' : '⏳ Coming Soon'}
+                    </div>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" ${isEnabled ? 'checked' : ''} onchange="togglePageVisibility('${page.id}', this.checked)">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+        `;
+    }).join('');
+}
+
+async function togglePageVisibility(pageId, isEnabled) {
+    if (!window.db) {
+        alert('Firebase not connected');
+        return;
+    }
+
+    try {
+        await window.db.collection('settings').doc('pages').set({
+            [pageId]: isEnabled
+        }, { merge: true });
+
+        // Reload page settings to update UI
+        await loadPageSettings();
+        alert(`Page ${isEnabled ? 'enabled' : 'disabled'} successfully!`);
+    } catch (error) {
+        console.error('Error updating page visibility:', error);
+        alert('Error updating page visibility');
     }
 }
