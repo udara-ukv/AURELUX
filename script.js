@@ -1,4 +1,68 @@
-// ===== SAMPLE PRODUCT DATABASE ===== 
+// ===== EMAILJS INITIALIZATION =====
+// Use EmailJS REST API as a reliable fallback when the CDN script is blocked.
+const EMAILJS_PUBLIC_KEY = "eBshwVe3UMGGO3vfj";
+
+function initializeEmailJS() {
+    if (typeof emailjs !== 'undefined') {
+        emailjs.init(EMAILJS_PUBLIC_KEY);
+        console.log('✅ EmailJS initialized successfully');
+    }
+}
+
+// Try to initialize immediately if the library is already loaded
+initializeEmailJS();
+
+// Helper function to send emails (non-blocking, fire-and-forget)
+function sendEmailAsync(serviceId, templateId, templateParams) {
+    // Enrich params with to_email field
+    const enrichedParams = {
+        ...templateParams
+    };
+    if (!enrichedParams.to_email && enrichedParams.user_email) {
+        enrichedParams.to_email = enrichedParams.user_email;
+    }
+    if (!enrichedParams.to_email && enrichedParams.customer_email) {
+        enrichedParams.to_email = enrichedParams.customer_email;
+    }
+
+    if (typeof emailjs !== 'undefined') {
+        emailjs.send(serviceId, templateId, enrichedParams)
+            .then(response => {
+                console.log('✅ Email sent:', response.status);
+            })
+            .catch(error => {
+                console.log('⚠️ Email failed:', error.message || error);
+            });
+        return;
+    }
+
+    // REST API fallback (works even if CDN is blocked)
+
+    fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            service_id: serviceId,
+            template_id: templateId,
+            user_id: EMAILJS_PUBLIC_KEY,
+            template_params: enrichedParams
+        })
+    })
+        .then(async response => {
+            if (!response.ok) {
+                const bodyText = await response.text();
+                throw new Error(`HTTP ${response.status} - ${bodyText}`);
+            }
+            console.log('✅ Email sent via REST API');
+        })
+        .catch(error => {
+            console.log('⚠️ Email failed via REST API:', error.message || error);
+        });
+}
+
+// ===== SAMPLE PRODUCT DATABASE =====
 let productsDB = [
     {
         id: 1,
@@ -306,6 +370,13 @@ async function registerUser(email, password, fullName) {
 
             await createOrUpdateUserProfile(user, fullName);
             saveUser({ email, fullName });
+            
+            // Send welcome email (non-blocking)
+            sendEmailAsync("service_9b6hlzf", "template_2go1h35", {
+                user_email: email,
+                user_name: fullName || "Guest"
+            });
+            
             showNotification('Account created successfully!');
             updateUserUI();
             return true;
@@ -675,16 +746,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Featured products on home page
     const featuredGrid = document.getElementById('featuredProductsGrid');
-    const renderFeatured = () => {
-        if (featuredGrid) {
+    if (featuredGrid) {
+        console.log('featuredGrid found, productsDB length:', productsDB.length);
+        if (productsDB && productsDB.length > 0) {
             renderProducts(productsDB.slice(0, 4), featuredGrid);
+            console.log('Featured products rendered');
+        } else {
+            console.log('No products in productsDB yet');
         }
-    };
-
-    if (window.productsReady) {
-        renderFeatured();
-    } else {
-        window.addEventListener('products:ready', renderFeatured, { once: true });
     }
 });
 

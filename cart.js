@@ -157,7 +157,7 @@ function setupEventListeners() {
             // Save order to Firestore
             if (window.db) {
                 try {
-                    await window.db.collection('orders').add({
+                    const orderRef = await window.db.collection('orders').add({
                         customerEmail: user.email,
                         customerName: user.fullName,
                         items: cart.map(item => ({
@@ -176,6 +176,29 @@ function setupEventListeners() {
                         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                         status: 'completed'
                     });
+                    
+                    // Send order confirmation email (non-blocking)
+                    try {
+                        const itemsList = cart.map(item => 
+                            `${item.name} x${item.quantity} - $${(item.price * item.quantity).toFixed(2)}`
+                        ).join("\n");
+                        
+                        // Use the sendEmailAsync helper from script.js (non-blocking)
+                        if (typeof sendEmailAsync !== 'undefined') {
+                            sendEmailAsync("service_9b6hlzf", "template_ukyzry9", {
+                                customer_email: user.email,
+                                customer_name: user.fullName,
+                                order_id: orderRef.id.substring(0, 8),
+                                items_list: itemsList,
+                                subtotal: subtotal.toFixed(2),
+                                shipping: shipping === 0 ? "FREE" : "$" + shipping.toFixed(2),
+                                discount: discount > 0 ? "-$" + discount.toFixed(2) : "$0.00",
+                                total: total.toFixed(2)
+                            });
+                        }
+                    } catch (emailError) {
+                        console.log("Email error:", emailError.message);
+                    }
                 } catch (error) {
                     console.error('Error saving order:', error);
                 }
