@@ -141,6 +141,9 @@ function renderOrdersTable(orders) {
         const itemCount = order.items?.length || 0;
         const total = order.total || 0;
 
+        const currentStatus = order.status || 'pending';
+        const statusOptions = ['pending','processing','shipped','completed','cancelled'];
+
         return `
             <tr>
                 <td>#${order.id.substring(0, 8)}</td>
@@ -148,10 +151,53 @@ function renderOrdersTable(orders) {
                 <td>${itemCount} items</td>
                 <td>$${total.toFixed(2)}</td>
                 <td>${date}</td>
-                <td><span class="status-badge status-completed">Completed</span></td>
+                <td>
+                    <select class="order-status-select" onchange="updateOrderStatus('${order.id}', this.value)">
+                        ${statusOptions.map(s => `<option value="${s}" ${s===currentStatus? 'selected':''}>${s}</option>`).join('')}
+                    </select>
+                </td>
             </tr>
         `;
     }).join('');
+}
+
+// Update order status in Firestore and notify customer
+async function updateOrderStatus(orderId, newStatus) {
+    if (!window.db) {
+        alert('Firebase not connected');
+        return;
+    }
+
+    try {
+        await window.db.collection('orders').doc(orderId).update({ status: newStatus });
+
+        // Reload orders table
+        await loadOrders();
+
+        // Optionally send email notification to customer (if sendEmailAsync available)
+        try {
+            const orderDoc = await window.db.collection('orders').doc(orderId).get();
+            if (orderDoc.exists) {
+                const order = orderDoc.data();
+                const toEmail = order.customerEmail || order.userEmail;
+                if (toEmail && typeof sendEmailAsync !== 'undefined') {
+                    sendEmailAsync('service_9b6hlzf', 'template_order_status', {
+                        customer_email: toEmail,
+                        customer_name: order.customerName || '',
+                        order_id: orderId.substring(0,8),
+                        new_status: newStatus
+                    });
+                }
+            }
+        } catch (emailErr) {
+            console.warn('Order updated but notification failed:', emailErr);
+        }
+
+        alert('Order status updated to ' + newStatus);
+    } catch (error) {
+        console.error('Error updating order status:', error);
+        alert('Failed to update order status');
+    }
 }
 
 // Load Customers
