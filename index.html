@@ -164,23 +164,50 @@
 
     <!-- About Section -->
     <section class="about-section" id="about">
-        <div class="section-container">
-            <div class="section-heading">
-                <h2>About AURELUX</h2>
-                <p>Luxury pieces curated for timeless style and everyday elegance.</p>
+        <div class="section-container about-grid-wide">
+            <div class="about-left">
+                <div class="section-heading">
+                    <h2>About AURELUX</h2>
+                    <p>Curating timeless luxury — jewelry, watches, handbags and accessories crafted for a refined life.</p>
+                </div>
+
+                <ul class="about-features">
+                    <li><i class="fas fa-gem feature-icon"></i><div><strong>Curated Collections</strong><p>Hand-selected items to match elevated tastes.</p></div></li>
+                    <li><i class="fas fa-award feature-icon"></i><div><strong>Integrity & Quality</strong><p>Authenticity and craftsmanship are at our core.</p></div></li>
+                    <li><i class="fas fa-headset feature-icon"></i><div><strong>White-Glove Support</strong><p>Personalized service from purchase to delivery.</p></div></li>
+                </ul>
+
+                <div class="cta-row">
+                    <a href="products.html" class="btn btn-hero">Browse Collections</a>
+                    <a href="#contact" class="btn btn-outline">Contact Support</a>
+                </div>
             </div>
-            <div class="about-grid">
-                <div class="about-card">
-                    <h3>Our Mission</h3>
-                    <p>We bring together premium jewelry, watches, handbags, and accessories in one refined shopping experience.</p>
+
+            <div class="about-right">
+                <div class="team">
+                    <h3>Meet the Team</h3>
+                    <div class="team-grid">
+                        <div class="team-card">
+                            <img src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?auto=format&fit=crop&w=400&q=60" alt="Founder">
+                            <h4>Amira Stone</h4>
+                            <p>Founder & Curator</p>
+                        </div>
+                        <div class="team-card">
+                            <img src="https://images.unsplash.com/photo-1545996124-62c7fbf4b8f8?auto=format&fit=crop&w=400&q=60" alt="Head of Styling">
+                            <h4>Lucas Reed</h4>
+                            <p>Head of Styling</p>
+                        </div>
+                        <div class="team-card">
+                            <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=60" alt="Customer Support">
+                            <h4>Priya Kapoor</h4>
+                            <p>Customer Experience</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="about-card">
-                    <h3>Quality First</h3>
-                    <p>Every collection is selected to reflect craftsmanship, design, and long-lasting value.</p>
-                </div>
-                <div class="about-card">
-                    <h3>Customer Care</h3>
-                    <p>We focus on simple shopping, quick support, and a luxury experience from start to finish.</p>
+
+                <div class="testimonials">
+                    <h3>What customers say</h3>
+                    <blockquote class="testimonial">"Exceptional pieces and an even better experience — I’m a repeat customer."<span>- S. Martin</span></blockquote>
                 </div>
             </div>
         </div>
@@ -188,21 +215,46 @@
 
     <!-- Contact Section -->
     <section class="contact-section" id="contact">
-        <div class="section-container">
-            <div class="section-heading">
-                <h2>Contact Us</h2>
-                <p>Need help with an order or a product question? Reach out anytime.</p>
-            </div>
-            <div class="contact-grid">
-                <div class="contact-card">
-                    <h3>Get in Touch</h3>
-                    <p><strong>Email:</strong> info@aurelux.com</p>
-                    <p><strong>Phone:</strong> +1 (888) 123-4567</p>
-                    <p><strong>Hours:</strong> 9AM - 8PM EST</p>
+        <div class="section-container contact-grid-wide">
+            <div class="contact-left">
+                <div class="section-heading">
+                    <h2>Contact Us</h2>
+                    <p>Questions about an order, product details or partnership opportunities? We’re here to help.</p>
                 </div>
-                <div class="contact-card">
-                    <h3>Support</h3>
-                    <p>For order help, shipping questions, or product support, contact our team and we’ll reply as soon as possible.</p>
+
+                <div class="contact-cards">
+                    <div class="contact-card card-primary">
+                        <h4>Customer Care</h4>
+                        <p><strong>Email:</strong> support@aurelux.com</p>
+                        <p><strong>Phone:</strong> +1 (888) 123-4567</p>
+                        <p><strong>Hours:</strong> Mon–Sat, 9AM–8PM EST</p>
+                    </div>
+                    <div class="contact-card card-secondary">
+                        <h4>Wholesale & Partnerships</h4>
+                        <p>For brand collaborations and wholesale inquiries, email <strong>partners@aurelux.com</strong></p>
+                    </div>
+                </div>
+
+                <form class="contact-form" id="contactForm">
+                    <div class="form-row">
+                        <input type="text" name="name" placeholder="Your name" required>
+                        <input type="email" name="email" placeholder="Your email" required>
+                    </div>
+                    <textarea name="message" placeholder="How can we help?" rows="4" required></textarea>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                        <button type="reset" class="btn btn-outline">Clear</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="contact-right">
+                <div class="map-placeholder">
+                    <p>Map placeholder (replace with embed)</p>
+                </div>
+                <div class="visit-hours">
+                    <h4>Visit Us</h4>
+                    <p>Appointments available by request. See FAQ for shipping and returns.</p>
                 </div>
             </div>
         </div>

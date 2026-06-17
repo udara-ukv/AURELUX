@@ -403,6 +403,95 @@ button {
     max-width: 500px;
 }
 
+/* ===== ABOUT & CONTACT UPDATES ===== */
+.about-grid-wide {
+    display: grid;
+    grid-template-columns: 1fr 460px;
+    gap: 2.5rem;
+    align-items: start;
+    padding: 3rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+.about-left .section-heading h2,
+.contact-left .section-heading h2 {
+    color: var(--primary-color);
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+.about-features {
+    list-style: none;
+    margin-top: 1rem;
+    display: grid;
+    gap: 1rem;
+}
+.about-features li {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+.feature-icon {
+    font-size: 1.6rem;
+    color: var(--secondary-color);
+    min-width: 36px;
+}
+.cta-row {
+    margin-top: 1.25rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+.about-right .team {
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+.team-card {
+    text-align: center;
+}
+.team-card img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+.team-card h4 { margin-bottom: 0.2rem; }
+.testimonial { margin-top: 1rem; font-style: italic; color: var(--text-light); }
+
+.contact-grid-wide {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 2rem;
+    padding: 3rem 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+.contact-cards { display: flex; gap: 1rem; margin-top: 1rem; }
+.contact-card { background: white; padding: 1rem; border-radius: 8px; box-shadow: var(--shadow); flex: 1; }
+.card-primary { border-left: 4px solid var(--primary-color); }
+.card-secondary { border-left: 4px solid var(--secondary-color); }
+.contact-form { margin-top: 1rem; background: white; padding: 1rem; border-radius: 8px; box-shadow: var(--shadow); }
+.contact-form .form-row { display: flex; gap: 0.75rem; }
+.contact-form input, .contact-form textarea { width: 100%; padding: 0.75rem; border: 1px solid var(--border-color); border-radius: 6px; }
+.contact-form textarea { resize: vertical; }
+.form-actions { display: flex; gap: 0.75rem; margin-top: 0.75rem; }
+.map-placeholder { height: 300px; background: linear-gradient(135deg,#efefef,#ddd); border-radius: 8px; display:flex; align-items:center; justify-content:center; color:#777; box-shadow: var(--shadow); }
+.visit-hours { margin-top: 1rem; color: var(--text-light); }
+
+@media (max-width: 900px) {
+    .about-grid-wide, .contact-grid-wide { grid-template-columns: 1fr; padding: 2rem; }
+    .team-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+
 /* ===== CATEGORIES SECTION ===== */
 .categories {
     padding: 4rem 2rem;
