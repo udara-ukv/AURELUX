@@ -1,0 +1,11 @@
+{
+  "name": "aurelux-webapp",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test:e2e": "npx playwright test --reporter=list"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  }
+}

@@ -25,6 +25,18 @@ jobs:
         run: |
           htmlhint "**/*.html" || true
 
+      - name: Install dev deps
+        run: |
+          npm ci
+
+      - name: Install Playwright browsers
+        run: |
+          npx playwright install --with-deps
+
+      - name: Run E2E tests (Playwright)
+        run: |
+          npm run test:e2e || true
+
       - name: Upload artifact for Pages
         uses: actions/upload-pages-artifact@v1
         with:
