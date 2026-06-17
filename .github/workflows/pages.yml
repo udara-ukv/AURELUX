@@ -1,0 +1,42 @@
+name: CI and Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install htmlhint
+        run: |
+          npm install -g htmlhint
+
+      - name: Run HTML validation (htmlhint)
+        run: |
+          htmlhint "**/*.html" || true
+
+      - name: Upload artifact for Pages
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: .
+
+  deploy-pages:
+    needs: build-and-validate
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: https://$GITHUB_REPOSITORY_OWNER.github.io/$GITHUB_REPOSITORY
+
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v1

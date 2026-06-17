@@ -12,6 +12,15 @@ function initializeEmailJS() {
 // Try to initialize immediately if the library is already loaded
 initializeEmailJS();
 
+// Register service worker for PWA (if supported)
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+            .then(reg => console.log('✅ Service Worker registered:', reg.scope))
+            .catch(err => console.log('⚠️ Service Worker failed:', err));
+    });
+}
+
 // Helper function to send emails (non-blocking, fire-and-forget)
 function sendEmailAsync(serviceId, templateId, templateParams) {
     // Enrich params with to_email field
