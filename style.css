@@ -632,6 +632,18 @@ button {
     gap: 2rem;
 }
 
+/* Orders page styles */
+.orders-section { padding: 1rem 0; }
+.order-card { background: white; padding: 1rem; border-radius: 8px; box-shadow: var(--shadow); margin-bottom: 1rem; }
+.order-header { display:flex; justify-content:space-between; align-items:center; gap:1rem; }
+.order-id { color: var(--text-light); margin-left: 0.5rem; }
+.order-status { padding: 0.25rem 0.5rem; border-radius: 4px; font-weight:700; text-transform:capitalize; }
+.order-status.completed { background: #e6ffef; color: #0b863b; }
+.order-status.pending { background: #fff7e6; color: #a46d00; }
+.order-meta { color: var(--text-light); margin-top: 0.5rem; }
+.order-items { margin-top: 0.5rem; list-style: none; padding-left: 0; }
+.order-items li { padding: 0.25rem 0; border-bottom: 1px dashed #eee; }
+
 .product-card {
     background: white;
     border-radius: 8px;
