@@ -745,6 +745,46 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+        // Contact form (About -> Contact)
+        const contactForm = document.getElementById('contactForm');
+        if (contactForm) {
+            contactForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const name = (contactForm.querySelector('input[name="name"]') || {}).value || '';
+                const email = (contactForm.querySelector('input[name="email"]') || {}).value || '';
+                const message = (contactForm.querySelector('textarea[name="message"]') || {}).value || '';
+
+                // Save to Firestore if available
+                if (window.db) {
+                    try {
+                        await window.db.collection('contacts').add({
+                            name: name,
+                            email: email,
+                            message: message,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                        console.log('✅ Contact saved to Firestore');
+                    } catch (err) {
+                        console.error('⚠️ Failed to save contact:', err);
+                    }
+                }
+
+                // Send email via EmailJS (template id: replace with your template)
+                try {
+                    sendEmailAsync('service_9b6hlzf', 'template_contact', {
+                        from_name: name,
+                        user_email: email,
+                        message: message
+                    });
+                } catch (err) {
+                    console.error('⚠️ sendEmailAsync error:', err);
+                }
+
+                showNotification('Thanks — your message was sent!');
+                contactForm.reset();
+            });
+        }
+
     // Cart button
     const cartBtn = document.getElementById('cartBtn');
     if (cartBtn) {
