@@ -266,6 +266,50 @@
         .page-status.disabled {
             color: #ff9800;
         }
+
+        .demo-banner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin: 0 0 1rem 0;
+            padding: 0.85rem 1rem;
+            background: #fff7e6;
+            border: 1px solid #f3d08a;
+            border-radius: 8px;
+            color: #7a4e00;
+            font-weight: 600;
+        }
+
+        .demo-banner-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .demo-banner-left i {
+            color: #d97706;
+        }
+
+        .demo-banner-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .demo-badge {
+            padding: 4px 10px;
+            border-radius: 999px;
+            background: #f59e0b;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .demo-badge.live {
+            background: #6b7280;
+        }
     </style>
 </head>
 <body>
@@ -305,6 +349,19 @@
                 </button>
             </div>
 
+            <div class="demo-banner" id="demoBanner">
+                <div class="demo-banner-left">
+                    <i class="fas fa-circle-info"></i>
+                    <span id="demoBannerText">Demo Data Mode: sample values are shown when Firestore has no live records yet.</span>
+                </div>
+                <div class="demo-banner-actions">
+                    <span id="demoModeBadge" class="demo-badge">DEMO DATA ON</span>
+                    <button id="loadDemoDataBtn" class="btn btn-secondary" type="button">Load Demo</button>
+                    <button id="showLiveDataBtn" class="btn btn-outline" type="button">Use Live</button>
+                    <button id="hideDemoBannerBtn" class="btn btn-outline" type="button">Hide</button>
+                </div>
+            </div>
+
             <!-- Statistics Cards -->
             <div class="stats-grid">
                 <div class="stat-card">
@@ -337,6 +394,66 @@
                 </div>
             </div>
 
+            <div class="dashboard-section">
+                <h2><i class="fas fa-chart-line"></i> Simple Analytics</h2>
+                <p style="margin-bottom: 1.25rem; color: #666;">Basic insights from the orders already stored in Firestore.</p>
+                <div class="analytics-controls">
+                    <div class="analytics-filter-group">
+                        <label for="analyticsStartDate">Start date</label>
+                        <input type="date" id="analyticsStartDate">
+                    </div>
+                    <div class="analytics-filter-group">
+                        <label for="analyticsEndDate">End date</label>
+                        <input type="date" id="analyticsEndDate">
+                    </div>
+                    <button id="applyAnalyticsFilter" class="btn btn-secondary">Apply Filter</button>
+                    <button id="resetAnalyticsFilter" class="btn btn-outline">Reset</button>
+                    <button id="exportAnalyticsBtn" class="btn btn-primary">Export Analytics CSV</button>
+                </div>
+                <div class="analytics-summary-grid">
+                    <div class="analytics-summary-card">
+                        <h3>Revenue in Range</h3>
+                        <div id="analyticsRevenueRange" class="analytics-summary-value">$0.00</div>
+                        <p id="analyticsRevenueCompare" class="analytics-summary-note">Compared with previous period</p>
+                    </div>
+                    <div class="analytics-summary-card">
+                        <h3>Orders in Range</h3>
+                        <div id="analyticsOrdersRange" class="analytics-summary-value">0</div>
+                        <p id="analyticsOrdersCompare" class="analytics-summary-note">Compared with previous period</p>
+                    </div>
+                    <div class="analytics-summary-card">
+                        <h3>Average Order Value</h3>
+                        <div id="analyticsAovRange" class="analytics-summary-value">$0.00</div>
+                        <p id="analyticsAovCompare" class="analytics-summary-note">Compared with previous period</p>
+                    </div>
+                    <div class="analytics-summary-card">
+                        <h3>Top Product</h3>
+                        <div id="analyticsTopProduct" class="analytics-summary-value">-</div>
+                        <p id="analyticsTopProductNote" class="analytics-summary-note">Most sold item in selected range</p>
+                    </div>
+                </div>
+                <div class="analytics-grid">
+                    <div class="analytics-card">
+                        <h3>Orders by Status</h3>
+                        <div id="statusBreakdown" class="analytics-list">
+                            <p style="color:#999;">Loading status breakdown...</p>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Monthly Revenue</h3>
+                        <div id="monthlyRevenueChart" class="analytics-bars">
+                            <p style="color:#999;">Loading monthly revenue...</p>
+                        </div>
+                    </div>
+                    <div class="analytics-card">
+                        <h3>Top Products</h3>
+                        <div id="topProductsList" class="analytics-list">
+                            <p style="color:#999;">Loading top products...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Recent Orders -->
             <div class="dashboard-section">
                 <h2><i class="fas fa-shopping-cart"></i> Recent Orders</h2>
@@ -348,13 +465,14 @@
                                 <th>Customer</th>
                                 <th>Items</th>
                                 <th>Total</th>
+                                <th>Payment</th>
                                 <th>Date</th>
                                 <th>Status</th>
                             </tr>
                         </thead>
                         <tbody id="ordersTableBody">
                             <tr>
-                                <td colspan="6" style="text-align: center; padding: 2rem; color: #999;">
+                                <td colspan="7" style="text-align: center; padding: 2rem; color: #999;">
                                     Loading orders...
                                 </td>
                             </tr>
