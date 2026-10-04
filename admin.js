@@ -116,6 +116,7 @@ function setupEventListeners() {
     const loadDemoDataBtn = document.getElementById('loadDemoDataBtn');
     const showLiveDataBtn = document.getElementById('showLiveDataBtn');
     const hideDemoBannerBtn = document.getElementById('hideDemoBannerBtn');
+    const showDemoBannerBtn = document.getElementById('showDemoBannerBtn');
 
     if (loginForm) {
         loginForm.addEventListener('submit', handleAdminLogin);
@@ -151,6 +152,10 @@ function setupEventListeners() {
 
     if (hideDemoBannerBtn) {
         hideDemoBannerBtn.addEventListener('click', hideDemoBanner);
+    }
+
+    if (showDemoBannerBtn) {
+        showDemoBannerBtn.addEventListener('click', showDemoBanner);
     }
 }
 
@@ -190,10 +195,14 @@ function updateDemoBannerState() {
     const banner = document.getElementById('demoBanner');
     const badge = document.getElementById('demoModeBadge');
     const text = document.getElementById('demoBannerText');
+    const showBtn = document.getElementById('showDemoBannerBtn');
 
     if (!banner || !badge || !text) return;
 
     banner.style.display = 'flex';
+    if (showBtn) {
+        showBtn.style.display = 'none';
+    }
 
     if (forceDemoMode) {
         badge.textContent = 'DEMO DATA ON';
@@ -222,8 +231,23 @@ function disableDemoMode() {
 
 function hideDemoBanner() {
     const banner = document.getElementById('demoBanner');
+    const showBtn = document.getElementById('showDemoBannerBtn');
     if (banner) {
         banner.style.display = 'none';
+    }
+    if (showBtn) {
+        showBtn.style.display = 'inline-flex';
+    }
+}
+
+function showDemoBanner() {
+    const banner = document.getElementById('demoBanner');
+    const showBtn = document.getElementById('showDemoBannerBtn');
+    if (banner) {
+        banner.style.display = 'flex';
+    }
+    if (showBtn) {
+        showBtn.style.display = 'none';
     }
 }
 
