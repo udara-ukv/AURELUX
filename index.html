@@ -11,6 +11,7 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2c1810">
     <meta name="mobile-web-app-capable" content="yes">
+    <script src="sentry-init.js"></script>
 </head>
 <body>
     <!-- Navigation Header -->
@@ -153,6 +154,19 @@
         <h2>Featured Products</h2>
         <div class="products-grid" id="featuredProductsGrid">
             <!-- Products will be loaded dynamically -->
+        </div>
+    </section>
+
+    <!-- Recommended Products -->
+    <section class="recommended-products">
+        <div class="section-container">
+            <div class="section-heading">
+                <h2>Recommended for You</h2>
+                <p>Simple customer-side recommendations based on your cart and browsing interest.</p>
+            </div>
+            <div class="products-grid" id="recommendedProductsGrid">
+                <!-- Personalized recommendations will be loaded dynamically -->
+            </div>
         </div>
     </section>
 
@@ -308,6 +322,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
     <script src="firebase-config.js"></script>
     <script src="firebase-init.js"></script>
+    <script src="client-logger.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

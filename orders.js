@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function renderOrderCard(order) {
         const createdAt = order.createdAt && order.createdAt.toDate ? order.createdAt.toDate().toLocaleString() : '—';
         const itemsHtml = (order.items || []).map(i => `<li>${i.name} x${i.quantity} — $${(i.price * i.quantity).toFixed(2)}</li>`).join('');
+        const paymentLabel = order.paymentProvider ? `${order.paymentProvider} • ${order.paymentStatus || 'paid'}` : null;
         return `
             <div class="order-card">
                 <div class="order-header">
@@ -12,6 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <span class="order-status ${order.status}">${order.status}</span>
                 </div>
                 <div class="order-meta">Placed: ${createdAt} • Total: $${(order.total || 0).toFixed(2)}</div>
+                ${paymentLabel ? `<div class="order-payment"><i class="fas fa-credit-card"></i> ${paymentLabel}</div>` : ''}
                 <ul class="order-items">${itemsHtml}</ul>
             </div>
         `;

@@ -782,16 +782,21 @@ function renderAnalyticsSummary(currentOrders, previousOrders) {
     const previousCount = previousOrders.length;
     const currentAov = currentCount ? currentRevenue / currentCount : 0;
     const previousAov = previousCount ? previousRevenue / previousCount : 0;
+    const forecastRevenue = predictNextMonthRevenue(currentOrders);
 
     document.getElementById('analyticsRevenueRange').textContent = `$${currentRevenue.toFixed(2)}`;
     document.getElementById('analyticsOrdersRange').textContent = currentCount;
     document.getElementById('analyticsAovRange').textContent = `$${currentAov.toFixed(2)}`;
     document.getElementById('analyticsTopProduct').textContent = getTopProductName(currentOrders);
+    document.getElementById('analyticsForecastRevenue').textContent = `$${forecastRevenue.toFixed(2)}`;
 
     document.getElementById('analyticsRevenueCompare').textContent = buildCompareText(currentRevenue, previousRevenue);
     document.getElementById('analyticsOrdersCompare').textContent = buildCompareText(currentCount, previousCount);
     document.getElementById('analyticsAovCompare').textContent = buildCompareText(currentAov, previousAov);
     document.getElementById('analyticsTopProductNote').textContent = currentOrders.length ? 'Most sold item in selected range' : 'No orders in selected range';
+    document.getElementById('analyticsForecastNote').textContent = currentOrders.length
+        ? 'Forecast is based on monthly revenue trend from your order history'
+        : 'Not enough orders to forecast reliably';
 }
 
 function getTopProductName(orders) {
@@ -805,6 +810,44 @@ function getTopProductName(orders) {
 
     const topEntry = Object.entries(productCounts).sort((a, b) => b[1] - a[1])[0];
     return topEntry ? `${topEntry[0]} (${topEntry[1]})` : '-';
+}
+
+function predictNextMonthRevenue(orders) {
+    const monthlyTotals = orders.reduce((acc, order) => {
+        const date = getOrderDate(order);
+        if (!date || Number.isNaN(date.getTime())) return acc;
+
+        const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+        acc[key] = (acc[key] || 0) + (order.total || 0);
+        return acc;
+    }, {});
+
+    const monthlyValues = Object.entries(monthlyTotals)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([, value]) => value);
+
+    if (monthlyValues.length < 2) {
+        return monthlyValues[0] || 0;
+    }
+
+    const n = monthlyValues.length;
+    const xValues = monthlyValues.map((_, index) => index + 1);
+    const sumX = xValues.reduce((sum, value) => sum + value, 0);
+    const sumY = monthlyValues.reduce((sum, value) => sum + value, 0);
+    const sumXY = xValues.reduce((sum, value, index) => sum + value * monthlyValues[index], 0);
+    const sumXX = xValues.reduce((sum, value) => sum + value * value, 0);
+    const denominator = (n * sumXX) - (sumX * sumX);
+
+    if (denominator === 0) {
+        return monthlyValues[monthlyValues.length - 1];
+    }
+
+    const slope = ((n * sumXY) - (sumX * sumY)) / denominator;
+    const intercept = (sumY - (slope * sumX)) / n;
+    const nextMonthIndex = n + 1;
+    const forecast = (slope * nextMonthIndex) + intercept;
+
+    return Math.max(0, forecast);
 }
 
 function buildCompareText(current, previous) {

@@ -795,16 +795,69 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Featured products on home page
     const featuredGrid = document.getElementById('featuredProductsGrid');
-    if (featuredGrid) {
-        console.log('featuredGrid found, productsDB length:', productsDB.length);
-        if (productsDB && productsDB.length > 0) {
-            renderProducts(productsDB.slice(0, 4), featuredGrid);
-            console.log('Featured products rendered');
-        } else {
-            console.log('No products in productsDB yet');
+    const recommendedGrid = document.getElementById('recommendedProductsGrid');
+
+    const renderHomeProductSections = () => {
+        if (featuredGrid) {
+            console.log('featuredGrid found, productsDB length:', productsDB.length);
+            if (productsDB && productsDB.length > 0) {
+                renderProducts(productsDB.slice(0, 4), featuredGrid);
+                console.log('Featured products rendered');
+            } else {
+                console.log('No products in productsDB yet');
+            }
         }
-    }
+
+        if (recommendedGrid) {
+            const recommendations = getRecommendedProducts();
+            if (recommendations.length > 0) {
+                renderProducts(recommendations, recommendedGrid);
+            } else {
+                recommendedGrid.innerHTML = '<p style="text-align:center; color:#999; padding:2rem;">Add a few products to your cart to get personalized recommendations.</p>';
+            }
+        }
+    };
+
+    renderHomeProductSections();
+    window.addEventListener('products:ready', renderHomeProductSections);
 });
+
+function getRecommendedProducts(limit = 4) {
+    if (!productsDB || !productsDB.length) return [];
+
+    const cartItems = Array.isArray(cart) ? cart : [];
+    const cartIds = cartItems.map(item => item.id);
+    const categoryScores = cartItems.reduce((scores, item) => {
+        const product = productsDB.find(p => p.id === item.id);
+        const category = (product?.category || item.category || '').toLowerCase();
+        if (!category) return scores;
+        scores[category] = (scores[category] || 0) + 1;
+        return scores;
+    }, {});
+
+    const scoredProducts = productsDB
+        .filter(product => !cartIds.includes(product.id))
+        .map(product => {
+            const category = (product.category || '').toLowerCase();
+            const categoryScore = categoryScores[category] || 0;
+            const ratingScore = Number(product.rating || 0) / 5;
+            const reviewScore = Math.min(Number(product.reviews || 0) / 100, 1);
+            const popularityScore = (ratingScore * 0.5) + (reviewScore * 0.5);
+
+            return {
+                ...product,
+                recommendationScore: (categoryScore * 2) + popularityScore
+            };
+        })
+        .sort((a, b) => b.recommendationScore - a.recommendationScore);
+
+    const hasPreferenceSignal = Object.keys(categoryScores).length > 0;
+    const fallbackList = productsDB
+        .filter(product => !cartIds.includes(product.id))
+        .sort((a, b) => (Number(b.rating || 0) - Number(a.rating || 0)) || (Number(b.reviews || 0) - Number(a.reviews || 0)));
+
+    return (hasPreferenceSignal ? scoredProducts : fallbackList).slice(0, limit);
+}
 
 // ===== PRODUCT RENDERING =====
 function renderProducts(products, container) {

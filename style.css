@@ -702,6 +702,11 @@ button {
     background-color: var(--secondary-color);
 }
 
+.recommended-products {
+    padding: 4rem 1rem;
+    background: linear-gradient(180deg, #fff, #faf7f2);
+}
+
 .products-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -765,6 +770,11 @@ button {
     border-radius: 8px;
     padding: 1rem;
     border-left: 4px solid #1a1a1a;
+}
+
+.analytics-summary-card.ai-card {
+    border-left-color: #7c3aed;
+    background: linear-gradient(180deg, #f8f5ff, #ffffff);
 }
 
 .analytics-summary-card h3 {

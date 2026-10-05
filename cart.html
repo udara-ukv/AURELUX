@@ -98,6 +98,46 @@
                     <span id="total">$0.00</span>
                 </div>
 
+                <div class="payment-section">
+                    <h3>Free Test Payment</h3>
+                    <div class="payment-methods">
+                        <label class="payment-option">
+                            <input type="radio" name="paymentMethod" value="stripe-test" checked>
+                            <span>
+                                <strong>Stripe Test Card</strong>
+                                <small>Use test card 4242 4242 4242 4242</small>
+                            </span>
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="paymentMethod" value="paypal-sandbox">
+                            <span>
+                                <strong>PayPal Sandbox</strong>
+                                <small>Free test checkout with a sandbox client ID</small>
+                            </span>
+                        </label>
+                    </div>
+
+                    <div id="stripePaymentPanel" class="payment-panel">
+                        <p class="payment-note">Use Stripe test card <strong>4242 4242 4242 4242</strong>, any future expiry date, and any 3-digit CVC.</p>
+                        <div class="payment-fields">
+                            <input type="text" id="testCardNumber" inputmode="numeric" autocomplete="cc-number" maxlength="19" placeholder="Card number">
+                            <div class="payment-grid">
+                                <input type="text" id="testCardExpiry" inputmode="numeric" autocomplete="cc-exp" maxlength="5" placeholder="MM/YY">
+                                <input type="text" id="testCardCvc" inputmode="numeric" autocomplete="cc-csc" maxlength="4" placeholder="CVC">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="paypalPaymentPanel" class="payment-panel" style="display: none;">
+                        <p class="payment-note">Paste your PayPal sandbox client ID below, then load the sandbox buttons. The value is saved only in your browser.</p>
+                        <div class="payment-fields">
+                            <input type="text" id="paypalSandboxClientId" placeholder="PayPal sandbox client ID">
+                            <button type="button" id="loadPaypalButtons" class="btn btn-secondary">Load PayPal Sandbox Buttons</button>
+                        </div>
+                        <div id="paypalButtonsContainer" class="paypal-buttons-container"></div>
+                    </div>
+                </div>
+
                 <button id="proceedCheckout" class="btn btn-primary btn-large">Proceed to Checkout</button>
                 <a href="products.html" class="btn btn-outline btn-large">Continue Shopping</a>
 

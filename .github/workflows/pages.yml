@@ -37,6 +37,18 @@ jobs:
         run: |
           npm run test:e2e
 
+      - name: Run Lighthouse audit
+        run: |
+          npm install -g lighthouse
+          mkdir -p lighthouse-reports
+          lighthouse https://udara-ukv.github.io/AURELUX/ --chrome-flags="--headless" --output-path=./lighthouse-reports/index.html || echo "Lighthouse audit completed"
+
+      - name: Upload Lighthouse report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: lighthouse-report
+          path: lighthouse-reports/
       - name: Upload artifact for Pages
         uses: actions/upload-pages-artifact@v1
         with:
