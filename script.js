@@ -350,6 +350,31 @@ function updateCartCount() {
 }
 
 // ===== USER AUTHENTICATION =====
+function getFirebaseAuthErrorMessage(error, action = 'sign in') {
+    const code = error && error.code ? String(error.code) : '';
+
+    const messages = {
+        'auth/email-already-in-use': 'This email is already registered. Try signing in instead.',
+        'auth/invalid-email': 'Please enter a valid email address.',
+        'auth/weak-password': 'Password should be at least 6 characters long.',
+        'auth/operation-not-allowed': 'Email/password sign-in is disabled in Firebase Authentication. Enable it in Firebase Console.',
+        'auth/network-request-failed': 'Network error. Check your connection and try again.',
+        'auth/user-not-found': 'No account found for this email.',
+        'auth/wrong-password': 'Incorrect password. Please try again.',
+        'auth/too-many-requests': 'Too many attempts. Please wait a moment and try again.'
+    };
+
+    if (messages[code]) {
+        return messages[code];
+    }
+
+    if (error && error.message) {
+        return error.message;
+    }
+
+    return `Unable to ${action} right now.`;
+}
+
 async function createOrUpdateUserProfile(user, fullName = '') {
     if (!window.db || !user) return;
 
@@ -391,7 +416,7 @@ async function registerUser(email, password, fullName) {
             return true;
         } catch (error) {
             console.error('Firebase register failed:', error);
-            showNotification(error.message || 'Registration failed', 'error');
+            showNotification(getFirebaseAuthErrorMessage(error, 'register'), 'error');
             return false;
         }
     }
@@ -427,7 +452,7 @@ async function loginUser(email, password) {
             return true;
         } catch (error) {
             console.error('Firebase login failed:', error);
-            showNotification(error.message || 'Invalid credentials', 'error');
+            showNotification(getFirebaseAuthErrorMessage(error, 'sign in'), 'error');
             return false;
         }
     }
