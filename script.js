@@ -240,6 +240,90 @@ let productsDB = [
         colors: ["Gold", "Silver"],
         sizes: ["One Size"],
         stock: 6
+    },
+    {
+        id: 9,
+        name: "Rose Oud Perfume",
+        category: "fragrances",
+        price: 289,
+        originalPrice: 360,
+        rating: 4.9,
+        reviews: 61,
+        image: "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=900&q=80",
+        images: [
+            "https://images.unsplash.com/photo-1541643600914-78b084683601?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1523293182086-7651a899d37f?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1563170351-be82bc888aa4?auto=format&fit=crop&w=1200&q=80"
+        ],
+        description: "A rich unisex fragrance with rose, oud, and warm amber notes.",
+        details: ["Unisex Scent", "Rose & Oud", "Long Lasting", "Travel Ready"],
+        colors: ["Burgundy", "Gold"],
+        sizes: ["50ml", "100ml"],
+        stock: 20
+    },
+    {
+        id: 10,
+        name: "Silk Travel Wallet",
+        category: "travel",
+        price: 199,
+        originalPrice: 250,
+        rating: 4.6,
+        reviews: 48,
+        image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=900&q=80",
+        images: [
+            "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1520637836862-4d197d17c7d7?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80"
+        ],
+        description: "Compact luxury wallet for passports, cards, and travel documents.",
+        details: ["Passport Slot", "Card Holders", "Zipped Pocket", "Premium Silk Finish"],
+        colors: ["Navy", "Black", "Olive"],
+        sizes: ["Standard"],
+        stock: 14
+    },
+    {
+        id: 11,
+        name: "Satin Beauty Essentials Kit",
+        category: "beauty",
+        price: 149,
+        originalPrice: 210,
+        rating: 4.7,
+        reviews: 77,
+        image: "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=80",
+        images: [
+            "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1526947425960-945c6e728c7d?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1556228578-2bfe7b58c0f6?auto=format&fit=crop&w=1200&q=80"
+        ],
+        description: "A curated beauty set with premium essentials for everyday care.",
+        details: ["Skincare Set", "Satin Pouch", "Gift Ready", "Travel Friendly"],
+        colors: ["Rose", "Cream", "Pearl"],
+        sizes: ["Standard"],
+        stock: 26
+    },
+    {
+        id: 12,
+        name: "Signature Gift Box",
+        category: "gifts",
+        price: 159,
+        originalPrice: 220,
+        rating: 4.8,
+        reviews: 39,
+        image: "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?auto=format&fit=crop&w=900&q=80",
+        images: [
+            "https://images.unsplash.com/photo-1513885535751-8b9238bd345a?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=1200&q=80",
+            "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80"
+        ],
+        description: "A premium luxury gift box for special occasions and celebrations.",
+        details: ["Curated Items", "Premium Wrap", "Message Card", "Ready to Gift"],
+        colors: ["Black", "Gold"],
+        sizes: ["Standard"],
+        stock: 19
     }
 ];
 
@@ -361,7 +445,9 @@ function getFirebaseAuthErrorMessage(error, action = 'sign in') {
         'auth/network-request-failed': 'Network error. Check your connection and try again.',
         'auth/user-not-found': 'No account found for this email.',
         'auth/wrong-password': 'Incorrect password. Please try again.',
-        'auth/too-many-requests': 'Too many attempts. Please wait a moment and try again.'
+        'auth/too-many-requests': 'Too many attempts. Please wait a moment and try again.',
+        'permission-denied': 'Firestore permission denied. Update Firestore rules or use demo mode.',
+        'PERMISSION_DENIED': 'Firestore permission denied. Update Firestore rules or use demo mode.'
     };
 
     if (messages[code]) {
@@ -369,14 +455,18 @@ function getFirebaseAuthErrorMessage(error, action = 'sign in') {
     }
 
     if (error && error.message) {
-        return error.message;
+        const message = String(error.message);
+        if (message.toLowerCase().includes('permission')) {
+            return 'Firestore permission denied. Update Firestore rules or switch to demo mode.';
+        }
+        return message;
     }
 
     return `Unable to ${action} right now.`;
 }
 
 async function createOrUpdateUserProfile(user, fullName = '') {
-    if (!window.db || !user) return;
+    if (!window.db || !user) return true;
 
     const profileData = {
         uid: user.uid,
@@ -389,7 +479,23 @@ async function createOrUpdateUserProfile(user, fullName = '') {
         profileData.createdAt = firebase.firestore.FieldValue.serverTimestamp();
     }
 
-    await window.db.collection('users').doc(user.uid).set(profileData, { merge: true });
+    try {
+        await window.db.collection('users').doc(user.uid).set(profileData, { merge: true });
+        return true;
+    } catch (error) {
+        const isPermissionIssue = error && (
+            error.code === 'permission-denied' ||
+            error.code === 'PERMISSION_DENIED' ||
+            String(error.message || '').toLowerCase().includes('permission')
+        );
+
+        if (isPermissionIssue) {
+            console.warn('Firestore user profile write blocked by rules:', error);
+            return false;
+        }
+
+        throw error;
+    }
 }
 
 async function registerUser(email, password, fullName) {
@@ -402,16 +508,28 @@ async function registerUser(email, password, fullName) {
                 await user.updateProfile({ displayName: fullName });
             }
 
-            await createOrUpdateUserProfile(user, fullName);
+            let profileWritten = true;
+            try {
+                profileWritten = await createOrUpdateUserProfile(user, fullName);
+            } catch (error) {
+                console.warn('Profile sync failed:', error);
+                profileWritten = false;
+            }
+
             saveUser({ email, fullName });
-            
+
+            if (!profileWritten) {
+                showNotification('Account created locally. Firestore rules need to allow user profile writes.', 'error');
+            } else {
+                showNotification('Account created successfully!');
+            }
+
             // Send welcome email (non-blocking)
             sendEmailAsync("service_9b6hlzf", "template_2go1h35", {
                 user_email: email,
                 user_name: fullName || "Guest"
             });
-            
-            showNotification('Account created successfully!');
+
             updateUserUI();
             return true;
         } catch (error) {

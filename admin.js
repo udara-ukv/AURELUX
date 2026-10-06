@@ -55,7 +55,11 @@ const DEMO_PRODUCTS = [
     { id: 'demo-product-1', name: 'Gold Bracelet', category: 'jewelry', price: 120, stock: 8 },
     { id: 'demo-product-2', name: 'Luxury Handbag', category: 'bags', price: 180, stock: 5 },
     { id: 'demo-product-3', name: 'Elegant Watch', category: 'accessories', price: 95, stock: 12 },
-    { id: 'demo-product-4', name: 'Pearl Earrings', category: 'jewelry', price: 64, stock: 10 }
+    { id: 'demo-product-4', name: 'Pearl Earrings', category: 'jewelry', price: 64, stock: 10 },
+    { id: 'demo-product-5', name: 'Rose Oud Perfume', category: 'fragrances', price: 289, stock: 7 },
+    { id: 'demo-product-6', name: 'Silk Travel Wallet', category: 'travel', price: 199, stock: 9 },
+    { id: 'demo-product-7', name: 'Beauty Essentials Kit', category: 'beauty', price: 149, stock: 11 },
+    { id: 'demo-product-8', name: 'Signature Gift Box', category: 'gifts', price: 159, stock: 6 }
 ];
 
 const DEMO_SUBSCRIBERS = [
