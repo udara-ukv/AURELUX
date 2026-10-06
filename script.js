@@ -366,9 +366,29 @@ async function loadProductsFromFirebase() {
 }
 
 async function initProducts() {
+    const localCatalog = Array.isArray(productsDB) ? [...productsDB] : [];
     const firebaseProducts = await loadProductsFromFirebase();
     if (firebaseProducts && firebaseProducts.length) {
-        productsDB = firebaseProducts;
+        const mergedProducts = [...localCatalog];
+
+        firebaseProducts.forEach(product => {
+            const existingIndex = mergedProducts.findIndex(existing => {
+                return String(existing.id) === String(product.id) || existing.name === product.name;
+            });
+
+            if (existingIndex >= 0) {
+                mergedProducts[existingIndex] = {
+                    ...mergedProducts[existingIndex],
+                    ...product
+                };
+            } else {
+                mergedProducts.push(product);
+            }
+        });
+
+        productsDB = mergedProducts;
+    } else {
+        productsDB = localCatalog;
     }
 
     window.productsReady = true;
