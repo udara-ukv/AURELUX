@@ -121,6 +121,7 @@ function setupEventListeners() {
     const showLiveDataBtn = document.getElementById('showLiveDataBtn');
     const hideDemoBannerBtn = document.getElementById('hideDemoBannerBtn');
     const showDemoBannerBtn = document.getElementById('showDemoBannerBtn');
+    const demoAdminAccessBtn = document.getElementById('demoAdminAccess');
 
     if (loginForm) {
         loginForm.addEventListener('submit', handleAdminLogin);
@@ -161,21 +162,39 @@ function setupEventListeners() {
     if (showDemoBannerBtn) {
         showDemoBannerBtn.addEventListener('click', showDemoBanner);
     }
+
+    if (demoAdminAccessBtn) {
+        demoAdminAccessBtn.addEventListener('click', () => {
+            sessionStorage.setItem('adminLoggedIn', 'true');
+            sessionStorage.setItem('adminDemoMode', 'true');
+            isAdminLoggedIn = true;
+            showDashboard();
+        });
+    }
 }
 
 async function handleAdminLogin(e) {
     e.preventDefault();
     
-    const email = document.getElementById('adminEmail').value;
-    const password = document.getElementById('adminPassword').value;
+    const email = document.getElementById('adminEmail').value.trim();
+    const password = document.getElementById('adminPassword').value.trim();
+
+    const isDemoLogin = (
+        email === ADMIN_EMAIL && password === ADMIN_PASSWORD
+    ) || (
+        email.toLowerCase() === 'demo' && password.toLowerCase() === 'demo'
+    ) || (
+        email.toLowerCase() === 'admin' && password.toLowerCase() === 'admin'
+    );
 
     // Simple auth check (in production, use Firebase custom claims or Admin SDK)
-    if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+    if (isDemoLogin) {
         sessionStorage.setItem('adminLoggedIn', 'true');
+        sessionStorage.setItem('adminDemoMode', 'true');
         isAdminLoggedIn = true;
         showDashboard();
     } else {
-        alert('Invalid admin credentials');
+        alert('Invalid admin credentials. For the interview demo, use the default admin login or the Demo Admin Access button.');
     }
 }
 
