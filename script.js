@@ -579,30 +579,52 @@ async function registerUser(email, password, fullName) {
 }
 
 async function loginUser(email, password) {
+    const normalizedEmail = String(email || '').trim();
+    const normalizedPassword = String(password || '').trim();
+
+    if (isDemoCustomerLogin(normalizedEmail, normalizedPassword)) {
+        const demoUser = getDemoCustomerProfile();
+        saveUser({ email: demoUser.email, fullName: demoUser.fullName });
+        showNotification(`Welcome back, ${demoUser.fullName}!`);
+        updateUserUI();
+        return true;
+    }
+
     if (window.auth) {
         try {
-            const credential = await window.auth.signInWithEmailAndPassword(email, password);
+            const credential = await window.auth.signInWithEmailAndPassword(normalizedEmail, normalizedPassword);
             const user = credential.user;
             await createOrUpdateUserProfile(user);
-            saveUser({ email: user.email || email, fullName: user.displayName || '' });
+            saveUser({ email: user.email || normalizedEmail, fullName: user.displayName || '' });
             showNotification(`Welcome back, ${user.displayName || 'User'}!`);
             updateUserUI();
             return true;
         } catch (error) {
             console.error('Firebase login failed:', error);
+            if (error && (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.message?.toLowerCase().includes('malformed') || error.message?.toLowerCase().includes('expired'))) {
+                const demoProfile = JSON.parse(localStorage.getItem('user_' + normalizedEmail) || 'null');
+                if (demoProfile && demoProfile.password === normalizedPassword) {
+                    saveUser({ email: demoProfile.email, fullName: demoProfile.fullName });
+                    showNotification(`Welcome back, ${demoProfile.fullName}!`);
+                    updateUserUI();
+                    return true;
+                }
+                showNotification('Firebase auth is not configured correctly. Use the demo login or fix Firebase Email/Password settings.', 'error');
+                return false;
+            }
             showNotification(getFirebaseAuthErrorMessage(error, 'sign in'), 'error');
             return false;
         }
     }
 
-    const userData = JSON.parse(localStorage.getItem('user_' + email));
+    const userData = JSON.parse(localStorage.getItem('user_' + normalizedEmail));
     
-    if (!userData || userData.password !== password) {
+    if (!userData || userData.password !== normalizedPassword) {
         showNotification('Invalid credentials', 'error');
         return false;
     }
     
-    saveUser({ email, fullName: userData.fullName });
+    saveUser({ email: normalizedEmail, fullName: userData.fullName });
     showNotification(`Welcome back, ${userData.fullName}!`);
     updateUserUI();
     return true;
@@ -862,6 +884,18 @@ document.addEventListener('DOMContentLoaded', function() {
             if (await loginUser(email, password)) {
                 closeModal('loginModal');
                 loginForm.reset();
+            }
+        });
+    }
+
+    const demoCustomerLoginBtn = document.getElementById('demoCustomerLogin');
+    if (demoCustomerLoginBtn) {
+        demoCustomerLoginBtn.addEventListener('click', async () => {
+            const worked = await loginUser(DEMO_CUSTOMER_EMAIL, DEMO_CUSTOMER_PASSWORD);
+            if (worked) {
+                closeModal('loginModal');
+                const loginFormElement = document.getElementById('loginForm');
+                if (loginFormElement) loginFormElement.reset();
             }
         });
     }
